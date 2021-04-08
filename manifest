@@ -4,7 +4,7 @@ JVMLevel=
 LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:399\:1
 author=Anthony S. Castanza;UCSD-MesirovLab
 categories=prediction;statistical methods
-commandLine=<Rscript> <libdir>ssGSEA_ROC.R --test.set\=<Test.GCT> --roc.result\=<ssGSEA_ROC.Result> --sig.threshold\=<Significance.Threshold> --up.label\=<First.Phenotype> --down.label\=<Second.Phenotype>
+commandLine=<Rscript> <libdir>ROC.Predict.R --test.set\=<Test.GCT> --roc.result\=<ssGSEA_ROC.Result> --sig.threshold\=<Significance.Threshold> --up.label\=<First.Phenotype> --down.label\=<Second.Phenotype>
 cpuType=any
 description=Predict phenotype classifications on the basis of ssGSEA results from a second set of samples using the ssGSEA_ROC result from an initial training set.
 fileFormat=txt
