@@ -1,5 +1,5 @@
 #ROC.Predict
-#Thu Apr 08 19:34:54 UTC 2021
+#Thu Apr 08 19:39:07 UTC 2021
 JVMLevel=
 LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:399\:1
 author=Anthony S. Castanza;UCSD-MesirovLab
@@ -39,7 +39,7 @@ p2_prefix_when_specified=
 p2_type=java.io.File
 p2_value=
 p3_MODE=
-p3_TYPE=Integer
+p3_TYPE=Floating Point
 p3_default_value=0.05
 p3_description=The significance threshold used to filter best performing gene sets from the ssGSEA_ROC result. The same threshold will be applied to all significance tests performed.
 p3_fileFormat=
@@ -50,7 +50,7 @@ p3_optional=
 p3_prefix=
 p3_prefix_when_specified=
 p3_range=0+
-p3_type=java.lang.Integer
+p3_type=java.lang.Float
 p3_value=
 p4_MODE=
 p4_TYPE=TEXT
