@@ -1,0 +1,86 @@
+#ROC.Predict
+#Thu Apr 08 19:34:54 UTC 2021
+JVMLevel=
+LSID=urn\:lsid\:8080.gpserver.ip-172-31-26-71.ip-172-31-26-71.ec2.internal\:genepatternmodules\:399\:1
+author=Anthony S. Castanza;UCSD-MesirovLab
+categories=prediction;statistical methods
+commandLine=<Rscript> <libdir>ssGSEA_ROC.R --test.set\=<Test.GCT> --roc.result\=<ssGSEA_ROC.Result> --sig.threshold\=<Significance.Threshold> --up.label\=<First.Phenotype> --down.label\=<Second.Phenotype>
+cpuType=any
+description=Predict phenotype classifications on the basis of ssGSEA results from a second set of samples using the ssGSEA_ROC result from an initial training set.
+fileFormat=txt
+job.docker.image=jupyter/datascience-notebook\:r-4.0.3
+language=any
+name=ROC.Predict
+os=any
+p1_MODE=IN
+p1_TYPE=FILE
+p1_default_value=
+p1_description=A .proj.GCT file from ssGSEA containing enrichment results for or more new samples that you want to classify based on the ssGSEA_ROC results from an initial set. Enrichment must be run using the same gene sets.
+p1_fileFormat=gct
+p1_flag=--test.set\=
+p1_name=Test.GCT
+p1_numValues=1..1
+p1_optional=
+p1_prefix=
+p1_prefix_when_specified=
+p1_type=java.io.File
+p1_value=
+p2_MODE=IN
+p2_TYPE=FILE
+p2_default_value=
+p2_description=The ".Results.txt" file from a run of the ssGSEA_ROC module
+p2_fileFormat=txt
+p2_flag=--roc.result\=
+p2_name=ssGSEA_ROC.Result
+p2_numValues=1..1
+p2_optional=
+p2_prefix=
+p2_prefix_when_specified=
+p2_type=java.io.File
+p2_value=
+p3_MODE=
+p3_TYPE=Integer
+p3_default_value=0.05
+p3_description=The significance threshold used to filter best performing gene sets from the ssGSEA_ROC result. The same threshold will be applied to all significance tests performed.
+p3_fileFormat=
+p3_flag=--sig.threshold\=
+p3_name=Significance.Threshold
+p3_numValues=1..1
+p3_optional=
+p3_prefix=
+p3_prefix_when_specified=
+p3_range=0+
+p3_type=java.lang.Integer
+p3_value=
+p4_MODE=
+p4_TYPE=TEXT
+p4_default_value=
+p4_description=The first phenotype from the CLS file used in the ssGSEA_ROC analysis (or second phenotype if "Reverse" was set to "true")
+p4_fileFormat=
+p4_flag=--up.label\=
+p4_name=First.Phenotype
+p4_numValues=0..1
+p4_optional=
+p4_prefix=
+p4_prefix_when_specified=
+p4_type=java.lang.String
+p4_value=
+p5_MODE=
+p5_TYPE=TEXT
+p5_default_value=
+p5_description=The second phenotype from the CLS file used in the ssGSEA_ROC analysis (or first phenotype if "Reverse" was set to "true")
+p5_fileFormat=
+p5_flag=--down.label\=
+p5_name=Second.Phenotype
+p5_numValues=0..1
+p5_optional=
+p5_prefix=
+p5_prefix_when_specified=
+p5_type=java.lang.String
+p5_value=
+privacy=public
+quality=development
+taskDoc=
+taskType=prediction
+userid=acastanza
+version=
