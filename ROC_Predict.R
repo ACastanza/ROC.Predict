@@ -110,23 +110,30 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  # If MCC>0 Phenotype A > cutoff. If MCC<0 Phenotype A < cutoff
  sample.matrix <- as.data.frame(samples$data[roc$Name, ])
  colnames(sample.matrix) <- colnames(samples$data)
- result.matrix <- matrix(rep("null"), nrow = ncol(samples$data), ncol = 1)
+ result.matrix <- matrix(rep("null"), nrow = ncol(samples$data), ncol = 3)
  rownames(result.matrix) = colnames(samples$data)
- colnames(result.matrix) = c("Phenotype_Call")
+ colnames(result.matrix) = c("Phenotype_Call","ES","McNemar.test pValue")
 
  pos.test <- as.integer(roc$Matthews.Correlation..MCC. >= round(0))
  neg.test <- (-1) * as.integer(roc$Matthews.Correlation..MCC. <= round(0))
  test.directions <- t(rbind(pos.test, neg.test))
  expected <- rowSums(test.directions)
 
- weight.expected <- roc$Matthews.Correlation..MCC. * expected
+ RES.expected <- cumsum(weight.expected <- roc$Matthews.Correlation..MCC. * expected)
+  max.ES.expected <- max(RES.expected)
+
 
  for (i in 1:length(colnames(samples$data))) {
 
-  sample.pos.test <- as.integer(sample.matrix[[i]] >= roc$cutoff.value..Youden.Index.)
-  sample.neg.test <- (-1) * as.integer(sample.matrix[[i]] =< roc$cutoff.value..Youden.Index.)
-  sample.test.directions <- t(rbind(sample.pos.test, sample.neg.test))
-  observed <- rowSums(sample.test.directions)
+  sample.pos.test.up <- as.integer(sample.matrix[[i]] >= roc$cutoff.value..Youden.Index.)[as.logical(pos.test)]
+  sample.pos.test.dn <- ((-1) * as.integer(sample.matrix[[i]] < roc$cutoff.value..Youden.Index.))[as.logical(pos.test)]
+  sample.pos.test = sample.pos.test.up + sample.pos.test.dn
+
+  sample.neg.test.up <- ((-1) * as.integer(sample.matrix[[i]] <= roc$cutoff.value..Youden.Index.))[as.logical(neg.test)]
+  sample.neg.test.dn <- as.integer(sample.matrix[[i]] > roc$cutoff.value..Youden.Index.)[as.logical(neg.test)]
+  sample.neg.test = sample.neg.test.up+sample.neg.test.dn
+
+  observed <- c(sample.pos.test,sample.neg.test)
 
   RES <- cumsum(roc$Matthews.Correlation..MCC. * observed)
   max.ES <- max(RES)
@@ -143,17 +150,22 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
 
   if (ES > 0) {
    result.matrix[i, 1] <- opt$up.label
+   result.matrix[i, 3] <- 1-(mcnemar.test(observed,expected)$p.value)
   }
   if (ES < 0) {
    result.matrix[i, 1] <- opt$down.label
+   result.matrix[i, 3] <- 1-(mcnemar.test(observed,-expected)$p.value)
   }
   if (ES == 0) {
    result.matrix[i, 1] <- "NO_PREDICTION"
+   result.matrix[i, 3] <- "null"
   }
+
+   result.matrix[i, 2] <- ES
 
  }
  result.matrix <- cbind(Sample_ID = rownames(result.matrix), result.matrix)
- write.table(result.matrix, "ROC_prediction_result.txt", sep = "\t", quote = FALSE, 
+ write.table(result.matrix, "ROC_prediction_result_strict.txt", sep = "\t", quote = FALSE, 
   col.names = TRUE, row.names = FALSE)
 
 } else {
