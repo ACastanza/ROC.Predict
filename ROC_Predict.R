@@ -165,7 +165,7 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
 
  }
  result.matrix <- cbind(Sample_ID = rownames(result.matrix), result.matrix)
- write.table(result.matrix, "ROC_prediction_result_strict.txt", sep = "\t", quote = FALSE, 
+ write.table(result.matrix, "ROC_prediction_result.txt", sep = "\t", quote = FALSE, 
   col.names = TRUE, row.names = FALSE)
 
 } else {
