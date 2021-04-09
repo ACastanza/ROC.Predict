@@ -112,7 +112,7 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  colnames(sample.matrix) <- colnames(samples$data)
  result.matrix <- matrix(rep("null"), nrow = ncol(samples$data), ncol = 3)
  rownames(result.matrix) = colnames(samples$data)
- colnames(result.matrix) = c("Phenotype_Call","ES","McNemar.test pValue")
+ colnames(result.matrix) = c("Phenotype_Call","ES","chisq.test pValue")
 
  pos.test <- as.integer(roc$Matthews.Correlation..MCC. >= round(0))
  neg.test <- (-1) * as.integer(roc$Matthews.Correlation..MCC. <= round(0))
@@ -150,11 +150,13 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
 
   if (ES > 0) {
    result.matrix[i, 1] <- opt$up.label
-   result.matrix[i, 3] <- 1-(mcnemar.test(observed,expected)$p.value)
+#   result.matrix[i, 3] <- 1-(mcnemar.test(observed,expected)$p.value)
+   result.matrix[i, 3] <- chisq.test(table(observed,expected),simulate.p.value = TRUE)$p.value
   }
   if (ES < 0) {
    result.matrix[i, 1] <- opt$down.label
-   result.matrix[i, 3] <- 1-(mcnemar.test(observed,-expected)$p.value)
+#   result.matrix[i, 3] <- 1-(mcnemar.test(observed,-expected)$p.value)
+   result.matrix[i, 3] <- chisq.test(table(observed,-expected),simulate.p.value = TRUE)$p.value
   }
   if (ES == 0) {
    result.matrix[i, 1] <- "NO_PREDICTION"
