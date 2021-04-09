@@ -123,8 +123,8 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
 
  for (i in 1:length(colnames(samples$data))) {
 
-  sample.pos.test <- as.integer(sample.matrix[[i]] > roc$cutoff.value..Youden.Index.)
-  sample.neg.test <- (-1) * as.integer(sample.matrix[[i]] < roc$cutoff.value..Youden.Index.)
+  sample.pos.test <- as.integer(sample.matrix[[i]] >= roc$cutoff.value..Youden.Index.)
+  sample.neg.test <- (-1) * as.integer(sample.matrix[[i]] =< roc$cutoff.value..Youden.Index.)
   sample.test.directions <- t(rbind(sample.pos.test, sample.neg.test))
   observed <- rowSums(sample.test.directions)
 
