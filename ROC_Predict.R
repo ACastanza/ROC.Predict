@@ -128,7 +128,7 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  reshuffled.tests <- matrix(nrow = nperm, ncol = length(expected))
 
 for (i in 1:nperm) {
-reshuffled.tests[i,] <- sample(1:length(expected),replace=TRUE)
+reshuffled.tests[i,] <- sample(1:length(expected))
 }
 
  for (i in 1:length(colnames(samples$data))) {
