@@ -204,7 +204,7 @@ reshuffled.tests[i,] <- sample(1:length(expected),replace=TRUE)
   if (ES == 0) {
    result.matrix[i, 1] <- "NO_PREDICTION"
 #   result.matrix[i, 3] <- "null"
-   result.matrix[i, 3] <- "1"
+   result.matrix[i, 3] <- "null"
   }
 
    result.matrix[i, 2] <- ES
