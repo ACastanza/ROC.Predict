@@ -108,7 +108,7 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  samples <- read.gct(opt$test.set)
 
  # If MCC>0 Phenotype A > cutoff. If MCC<0 Phenotype A < cutoff
- sample.matrix <- as.data.frame(samples$data[roc$Name, ])
+ sample.matrix <- as.data.frame(samples$data[roc$Name, , drop = FALSE])
  colnames(sample.matrix) <- colnames(samples$data)
  result.matrix <- matrix(rep("null"), nrow = ncol(samples$data), ncol = 3)
  rownames(result.matrix) = colnames(samples$data)
