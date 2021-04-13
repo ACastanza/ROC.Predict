@@ -112,7 +112,7 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  colnames(sample.matrix) <- colnames(samples$data)
  result.matrix <- matrix(rep("null"), nrow = ncol(samples$data), ncol = 3)
  rownames(result.matrix) = colnames(samples$data)
- colnames(result.matrix) = c("Phenotype_Call","ES","chisq.test pValue")
+ colnames(result.matrix) = c("Phenotype_Call", "ES", "NOM pValue")
 
  pos.test <- as.integer(roc$Matthews.Correlation..MCC. >= round(0))
  neg.test <- (-1) * as.integer(roc$Matthews.Correlation..MCC. <= round(0))
@@ -122,6 +122,14 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  RES.expected <- cumsum(weight.expected <- roc$Matthews.Correlation..MCC. * expected)
   max.ES.expected <- max(RES.expected)
 
+ nperm = 1000
+ phi <- matrix(nrow = length(colnames(samples$data)), ncol = nperm)
+ p.vals <- matrix(0, nrow = length(colnames(samples$data)), ncol = 2)
+ reshuffled.tests <- matrix(nrow = nperm, ncol = length(expected))
+
+for (i in 1:nperm) {
+reshuffled.tests[i,] <- sample(1:length(expected),replace=TRUE)
+}
 
  for (i in 1:length(colnames(samples$data))) {
 
@@ -141,26 +149,62 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
   if (max.ES > -min.ES) {
    # ES <- max.ES
    ES <- signif(max.ES, digits = 5)
-   arg.ES <- which.max(RES)
   } else {
    # ES <- min.ES
    ES <- signif(min.ES, digits = 5)
-   arg.ES <- which.min(RES)
   }
+
+	for (j in 1:nperm) {
+	 RES2 <- cumsum(roc$Matthews.Correlation..MCC. * observed[reshuffled.tests[j, 
+	  ]])
+	 max.ES2 <- max(RES2)
+	 min.ES2 <- min(RES2)
+	 if (max.ES2 > -min.ES2) {
+	  # ES <- max.ES
+	  ES2 <- signif(max.ES2, digits = 5)
+	 } else {
+	  # ES <- min.ES
+	  ES2 <- signif(min.ES2, digits = 5)
+	 }
+	 phi[i, j] <- ES2
+	}
+
+
+
+ pos.phi <- NULL
+ neg.phi <- NULL
+ for (j in 1:nperm) {
+	if (phi[i, j] >= 0) {
+	 pos.phi <- c(pos.phi, phi[i, j])
+	} else {
+	 neg.phi <- c(neg.phi, phi[i, j])
+	}
+ }
+
+ if (ES >= 0) {
+	p.vals[i, 1] <- signif(sum(pos.phi >= ES)/length(pos.phi), digits = 5)
+ } else {
+	p.vals[i, 1] <- signif(sum(neg.phi <= ES)/length(neg.phi), digits = 5)
+ }
+
+
 
   if (ES > 0) {
    result.matrix[i, 1] <- opt$up.label
 #   result.matrix[i, 3] <- 1-(mcnemar.test(observed,expected)$p.value)
-   result.matrix[i, 3] <- chisq.test(table(observed,expected),simulate.p.value = TRUE)$p.value
+#   result.matrix[i, 3] <- chisq.test(table(observed,expected),simulate.p.value = TRUE)$p.value
+   result.matrix[i, 3] <- signif(sum(pos.phi >= ES)/length(pos.phi), digits = 5)
   }
   if (ES < 0) {
    result.matrix[i, 1] <- opt$down.label
 #   result.matrix[i, 3] <- 1-(mcnemar.test(observed,-expected)$p.value)
-   result.matrix[i, 3] <- chisq.test(table(observed,-expected),simulate.p.value = TRUE)$p.value
+#   result.matrix[i, 3] <- chisq.test(table(observed,-expected),simulate.p.value = TRUE)$p.value
+   result.matrix[i, 3] <- signif(sum(neg.phi <= ES)/length(neg.phi), digits = 5)
   }
   if (ES == 0) {
    result.matrix[i, 1] <- "NO_PREDICTION"
-   result.matrix[i, 3] <- "null"
+#   result.matrix[i, 3] <- "null"
+   result.matrix[i, 3] <- "1"
   }
 
    result.matrix[i, 2] <- ES
