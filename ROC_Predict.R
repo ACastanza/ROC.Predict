@@ -12,12 +12,17 @@ make_option("--test.set", dest = "test.set"),
 make_option("--roc.result", dest = "roc.result"),
 make_option("--sig.threshold", dest = "sig.threshold", default = "0.05"),
 make_option("--up.label", dest = "up.label", default = "1"),
-make_option("--down.label", dest = "down.label", default = "2")
-
+make_option("--down.label", dest = "down.label", default = "2"),
+make_option("--basename", dest = "basename", default = "ROC_prediction"),
+make_option("--nperm", dest = "nperm", default = "1000"),
+make_option("--random.seed", dest = "random.seed", default = as.integer(Sys.time()))
 )
 
 opt <- parse_args(OptionParser(option_list = option_list), positional_arguments = TRUE, 
  args = arguments)$options
+
+set.seed(seed = as.integer(opt$random.seed), kind = NULL)
+nperm = as.integer(opt$nperm)
 
 roc <- read.table(opt$roc.result, sep = "\t", header = TRUE, na = "", stringsAsFactors = FALSE)
 
@@ -122,7 +127,6 @@ if (all((roc$AUC >= round(0.5, 1)) == (roc$Matthews.Correlation..MCC. >= round(0
  RES.expected <- cumsum(weight.expected <- roc$Matthews.Correlation..MCC. * expected)
   max.ES.expected <- max(RES.expected)
 
- nperm = 1000
  phi <- matrix(nrow = length(colnames(samples$data)), ncol = nperm)
  p.vals <- matrix(0, nrow = length(colnames(samples$data)), ncol = 2)
  reshuffled.tests <- matrix(nrow = nperm, ncol = length(expected))
@@ -211,7 +215,7 @@ reshuffled.tests[i,] <- sample(1:length(expected))
 
  }
  result.matrix <- cbind(Sample_ID = rownames(result.matrix), result.matrix)
- write.table(result.matrix, "ROC_prediction_result.txt", sep = "\t", quote = FALSE, 
+ write.table(result.matrix, paste0(opt$basename,"_result.txt"), sep = "\t", quote = FALSE, 
   col.names = TRUE, row.names = FALSE)
 
 } else {
